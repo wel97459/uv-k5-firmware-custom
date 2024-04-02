@@ -63,7 +63,7 @@ static void ACTION_FlashLight(void)
 
 void ACTION_Power(void)
 {
-	if (++gTxVfo->OUTPUT_POWER > OUTPUT_POWER_HIGH)
+	if (++gTxVfo->OUTPUT_POWER > OUTPUT_POWER_DISABLED)
 		gTxVfo->OUTPUT_POWER = OUTPUT_POWER_LOW;
 
 	gRequestSaveChannel = 1;

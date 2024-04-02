@@ -157,11 +157,12 @@ const int VFO_ONLY_SETTINGS[] = {};
 
 const uint8_t FIRST_HIDDEN_MENU_ITEM = MENU_F_LOCK;
 
-const char gSubMenu_TXP[][5] =
+const char gSubMenu_TXP[][9] =
 {
 	"LOW",
 	"MID",
-	"HIGH"
+	"HIGH",
+	"DISABLED"
 };
 
 const char gSubMenu_SFT_D[][4] =

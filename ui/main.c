@@ -616,7 +616,7 @@ void UI_DisplayMain(void)
 
 		if (state == VFO_STATE_NORMAL || state == VFO_STATE_ALARM)
 		{	// show the TX power
-			const char pwr_list[] = "LMH";
+			const char pwr_list[] = "LMHD";
 			const unsigned int i = gEeprom.VfoInfo[vfo_num].OUTPUT_POWER;
 			String[0] = (i < ARRAY_SIZE(pwr_list)) ? pwr_list[i] : '\0';
 			String[1] = '\0';

@@ -975,6 +975,10 @@ void RADIO_PrepareTX(void)
 			State = VFO_STATE_TX_DISABLE;
 		}
 		else
+		if(gCurrentVfo->OUTPUT_POWER == OUTPUT_POWER_DISABLED){
+			// disable TX when TX Power is disabled
+			State = VFO_STATE_TX_DISABLE;
+		}
 		if (TX_freq_check(gCurrentVfo->pTX->Frequency) == 0)
 		{	// TX frequency is allowed
 			if (gCurrentVfo->BUSY_CHANNEL_LOCK && gCurrentFunction == FUNCTION_RECEIVE)
