@@ -1655,8 +1655,7 @@ static void MENU_Key_STAR(const bool bKeyPressed, const bool bKeyHeld)
 
 		if (edit_index < 10)
 		{
-			edit[edit_index] = '-';
-
+			edit[edit_index+1] = edit[edit_index];
 			if (++edit_index >= 10)
 			{	// exit edit
 				gFlagAcceptSetting  = false;
