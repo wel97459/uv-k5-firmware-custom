@@ -16,7 +16,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-
+//#define ENABLE_MESSENGER
 #ifdef ENABLE_MESSENGER
 
 #include <string.h>
@@ -31,6 +31,8 @@
 #include "ui/helper.h"
 #include "ui/inputbox.h"
 #include "ui/ui.h"
+
+#define NEXT_CHAR_DELAY 100 // 10ms tick
 
 void UI_DisplayMSG(void) {
 	
@@ -83,7 +85,12 @@ void UI_DisplayMSG(void) {
 	GUI_DisplaySmallest(String, 5, 38, false, true);
 
 	memset(String, 0, sizeof(String));
-	sprintf(String, "%s_", cMessage);
+	if(keyTickCounter > NEXT_CHAR_DELAY)
+	{
+		sprintf(String, "%s_", cMessage);
+	}else{
+		sprintf(String, "%s", cMessage);
+	}
 	//UI_PrintStringSmall(String, 3, 0, 6);
 	GUI_DisplaySmallest(String, 5, 48, false, true);
 

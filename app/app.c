@@ -1135,7 +1135,11 @@ void APP_TimeSlice10ms(void)
 	gFlashLightBlinkCounter++;
 
 	#ifdef ENABLE_MESSENGER
-		keyTickCounter++;
+		if(keyTickCounter <= NEXT_CHAR_DELAY+2)
+			keyTickCounter++;
+
+		if(keyTickCounter == NEXT_CHAR_DELAY+1)
+			gUpdateDisplay = true;
 	#endif
 
 	if (UART_IsCommandAvailable())

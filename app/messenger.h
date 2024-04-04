@@ -16,7 +16,6 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-
 #ifndef APP_MSG_H
 #define APP_MSG_H
 
@@ -26,6 +25,8 @@
 #include <stdint.h>
 #include <string.h>
 #include "driver/keyboard.h"
+
+#define NEXT_CHAR_DELAY 100 // 10ms tick
 
 enum {
 	NONCE_LENGTH = 13,
@@ -41,6 +42,7 @@ typedef enum KeyboardType {
 
 extern KeyboardType keyboardType;
 extern uint16_t gErrorsDuringMSG;
+extern unsigned char cIndex;
 extern char cMessage[PAYLOAD_LENGTH];
 extern char rxMessage[4][PAYLOAD_LENGTH + 2];
 extern uint8_t hasNewMessage;

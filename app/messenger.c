@@ -16,7 +16,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-
+//#define ENABLE_MESSENGER
 #ifdef ENABLE_MESSENGER
 
 #include <string.h>
@@ -50,13 +50,11 @@ const uint8_t MAX_MSG_LENGTH = PAYLOAD_LENGTH - 1;
 
 uint16_t TONE2_FREQ;
 
-#define NEXT_CHAR_DELAY 100 // 10ms tick
-
 char T9TableLow[9][4] = { {',', '.', '?', '!'}, {'a', 'b', 'c', '\0'}, {'d', 'e', 'f', '\0'}, {'g', 'h', 'i', '\0'}, {'j', 'k', 'l', '\0'}, {'m', 'n', 'o', '\0'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v', '\0'}, {'w', 'x', 'y', 'z'} };
-char T9TableUp[9][4] = { {',', '.', '?', '!'}, {'A', 'B', 'C', '\0'}, {'D', 'E', 'F', '\0'}, {'G', 'H', 'I', '\0'}, {'J', 'K', 'L', '\0'}, {'M', 'N', 'O', '\0'}, {'P', 'Q', 'R', 'S'}, {'T', 'U', 'V', '\0'}, {'W', 'X', 'Y', 'Z'} };
+//char T9TableUp[9][4] = { {',', '.', '?', '!'}, {'A', 'B', 'C', '\0'}, {'D', 'E', 'F', '\0'}, {'G', 'H', 'I', '\0'}, {'J', 'K', 'L', '\0'}, {'M', 'N', 'O', '\0'}, {'P', 'Q', 'R', 'S'}, {'T', 'U', 'V', '\0'}, {'W', 'X', 'Y', 'Z'} };
 unsigned char numberOfLettersAssignedToKey[9] = { 4, 3, 3, 3, 3, 3, 4, 3, 4 };
 
-char T9TableNum[9][4] = { {'1', '\0', '\0', '\0'}, {'2', '\0', '\0', '\0'}, {'3', '\0', '\0', '\0'}, {'4', '\0', '\0', '\0'}, {'5', '\0', '\0', '\0'}, {'6', '\0', '\0', '\0'}, {'7', '\0', '\0', '\0'}, {'8', '\0', '\0', '\0'}, {'9', '\0', '\0', '\0'} };
+char T9TableNum[9][1] = { {'1'}, {'2'}, {'3'}, {'4'}, {'5'}, {'6'}, {'7'}, {'8'}, {'9'} };
 unsigned char numberOfNumsAssignedToKey[9] = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
 char cMessage[PAYLOAD_LENGTH];
@@ -419,50 +417,59 @@ void MSG_HandleReceive(){
 }
 
 // ---------------------------------------------------------------------------------
+void getNextChar(uint8_t key, uint8_t dec){
+	char chTmp = 0;
+	unsigned char keyMod;
+
+	if (cIndex >= MAX_MSG_LENGTH || (cIndex > 0 && dec))
+		cIndex--;
+
+	if ( keyboardType == NUMERIC ) {
+		chTmp = T9TableNum[key - 1][prevLetter];
+		keyMod = numberOfNumsAssignedToKey[key - 1];
+		cMessage[cIndex] = chTmp;
+	} else if ( keyboardType == LOWERCASE || keyboardType == UPPERCASE) {
+		chTmp = T9TableLow[key - 1][prevLetter];
+		keyMod = numberOfLettersAssignedToKey[key - 1];
+		if(keyboardType == UPPERCASE && chTmp >= 'a' && chTmp <= 'z'){
+			chTmp = chTmp - 32;
+		}
+		prevLetter = (prevLetter+1) % keyMod;
+		cMessage[cIndex] = chTmp;
+		keyTickCounter = 0;
+	}
+
+	if ( cIndex < MAX_MSG_LENGTH ) 
+		cIndex++;
+
+	return;
+}
 
 void insertCharInMessage(uint8_t key) {
 	if ( key == KEY_0 ) {
+
 		if ( keyboardType == NUMERIC ) {
 			cMessage[cIndex] = '0';
 		} else {
 			cMessage[cIndex] = ' ';
 		}
-		if ( cIndex < MAX_MSG_LENGTH ) {
+		
+		if ( cIndex < MAX_MSG_LENGTH ) 
 			cIndex++;
-		}
+		
+		keyTickCounter = NEXT_CHAR_DELAY+2;
 	} else if (prevKey == key)
 	{
-		cIndex = (cIndex > 0) ? cIndex - 1 : 0;
-		if ( keyboardType == NUMERIC ) {
-			cMessage[cIndex] = T9TableNum[key - 1][(++prevLetter) % numberOfNumsAssignedToKey[key - 1]];
-		} else if ( keyboardType == LOWERCASE ) {
-			cMessage[cIndex] = T9TableLow[key - 1][(++prevLetter) % numberOfLettersAssignedToKey[key - 1]];
-		} else {
-			cMessage[cIndex] = T9TableUp[key - 1][(++prevLetter) % numberOfLettersAssignedToKey[key - 1]];
-		}
-		if ( cIndex < MAX_MSG_LENGTH ) {
-			cIndex++;
-		}
+		getNextChar(key, true);
 	}
 	else
 	{
-		prevLetter = 0;
-		if ( cIndex >= MAX_MSG_LENGTH ) {
-			cIndex = (cIndex > 0) ? cIndex - 1 : 0;
-		}
-		if ( keyboardType == NUMERIC ) {
-			cMessage[cIndex] = T9TableNum[key - 1][prevLetter];
-		} else if ( keyboardType == LOWERCASE ) {
-			cMessage[cIndex] = T9TableLow[key - 1][prevLetter];
-		} else {
-			cMessage[cIndex] = T9TableUp[key - 1][prevLetter];
-		}
-		if ( cIndex < MAX_MSG_LENGTH ) {
-			cIndex++;
-		}
-
+		getNextChar(key, false);
+		prevLetter = 1;
 	}
+
 	cMessage[cIndex] = '\0';
+	
 	if ( keyboardType == NUMERIC ) {
 		prevKey = 0;
 		prevLetter = 0;
@@ -476,6 +483,7 @@ void processBackspace() {
 	cMessage[cIndex] = '\0';
 	prevKey = 0;
     prevLetter = 0;
+	keyTickCounter = NEXT_CHAR_DELAY+2;
 }
 
 void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
@@ -500,7 +508,7 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
     				prevLetter = 0;
 				}
 				insertCharInMessage(Key);
-				keyTickCounter = 0;
+
 				break;
 			case KEY_STAR:
 				keyboardType = (KeyboardType)((keyboardType + 1) % END_TYPE_KBRD);
