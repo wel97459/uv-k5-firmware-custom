@@ -17,6 +17,7 @@
  *     limitations under the License.
  */
 //#define ENABLE_MESSENGER
+
 #ifdef ENABLE_MESSENGER
 
 #include <string.h>
@@ -50,17 +51,14 @@ const uint8_t MAX_MSG_LENGTH = PAYLOAD_LENGTH - 1;
 
 uint16_t TONE2_FREQ;
 
-char T9TableLow[9][4] = { {',', '.', '?', '!'}, {'a', 'b', 'c', '\0'}, {'d', 'e', 'f', '\0'}, {'g', 'h', 'i', '\0'}, {'j', 'k', 'l', '\0'}, {'m', 'n', 'o', '\0'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v', '\0'}, {'w', 'x', 'y', 'z'} };
-//char T9TableUp[9][4] = { {',', '.', '?', '!'}, {'A', 'B', 'C', '\0'}, {'D', 'E', 'F', '\0'}, {'G', 'H', 'I', '\0'}, {'J', 'K', 'L', '\0'}, {'M', 'N', 'O', '\0'}, {'P', 'Q', 'R', 'S'}, {'T', 'U', 'V', '\0'}, {'W', 'X', 'Y', 'Z'} };
-unsigned char numberOfLettersAssignedToKey[9] = { 4, 3, 3, 3, 3, 3, 4, 3, 4 };
-
-char T9TableNum[9][1] = { {'1'}, {'2'}, {'3'}, {'4'}, {'5'}, {'6'}, {'7'}, {'8'}, {'9'} };
-unsigned char numberOfNumsAssignedToKey[9] = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+char T9TableLow[9][5] = { {',', '.', '?', '!', '1'}, {'a', 'b', 'c', '2', '\0'}, {'d', 'e', 'f', '3', '\0'}, {'g', 'h', 'i', '4', '\0'}, {'j', 'k', 'l', '5', '\0'}, {'m', 'n', 'o', '6', '\0'}, {'p', 'q', 'r', 's', '7'}, {'t', 'u', 'v', '8', '\0'}, {'w', 'x', 'y', 'z', '9'} };
+unsigned char numberOfLettersAssignedToKey[9] = { 5, 4, 4, 4, 4, 4, 5, 4, 5 };
 
 char cMessage[PAYLOAD_LENGTH];
 char lastcMessage[PAYLOAD_LENGTH];
 char rxMessage[4][PAYLOAD_LENGTH + 2];
 unsigned char cIndex = 0;
+unsigned char shiftKey = 0;
 unsigned char prevKey = 0, prevLetter = 0;
 KeyboardType keyboardType = UPPERCASE;
 
@@ -424,20 +422,15 @@ void getNextChar(uint8_t key, uint8_t dec){
 	if (cIndex >= MAX_MSG_LENGTH || (cIndex > 0 && dec))
 		cIndex--;
 
-	if ( keyboardType == NUMERIC ) {
-		chTmp = T9TableNum[key - 1][prevLetter];
-		keyMod = numberOfNumsAssignedToKey[key - 1];
-		cMessage[cIndex] = chTmp;
-	} else if ( keyboardType == LOWERCASE || keyboardType == UPPERCASE) {
-		chTmp = T9TableLow[key - 1][prevLetter];
-		keyMod = numberOfLettersAssignedToKey[key - 1];
-		if(keyboardType == UPPERCASE && chTmp >= 'a' && chTmp <= 'z'){
-			chTmp = chTmp - 32;
-		}
-		prevLetter = (prevLetter+1) % keyMod;
-		cMessage[cIndex] = chTmp;
-		keyTickCounter = 0;
+	chTmp = T9TableLow[key - 1][prevLetter];
+	keyMod = numberOfLettersAssignedToKey[key - 1];
+	if(keyboardType == UPPERCASE && chTmp >= 'a' && chTmp <= 'z'){
+		chTmp = chTmp - 32;
 	}
+	prevLetter = (prevLetter+1) % keyMod;
+	cMessage[cIndex] = chTmp;
+	keyTickCounter = 0;
+	
 
 	if ( cIndex < MAX_MSG_LENGTH ) 
 		cIndex++;
@@ -517,12 +510,13 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
 				processBackspace();
 				break;
 			case KEY_UP:
-				memset(cMessage, 0, sizeof(cMessage));
 				memcpy(cMessage, lastcMessage, PAYLOAD_LENGTH);
 				cIndex = strlen(cMessage);
 				break;
-			/*case KEY_DOWN:
-				break;*/
+			case KEY_DOWN:
+				strcpy(cMessage, "KJ6ICA ");
+				cIndex = strlen(7);
+				break;
 			case KEY_MENU:
 				// Send message
 				MSG_Send(cMessage);
@@ -557,6 +551,8 @@ void MSG_ClearPacketBuffer()
 }
 
 void MSG_Send(const char *cMessage){
+	if(cIndex == 0) return;
+
 	MSG_ClearPacketBuffer();
 	#ifdef ENABLE_ENCRYPTION
 		if(gEeprom.MESSENGER_CONFIG.data.encrypt)
