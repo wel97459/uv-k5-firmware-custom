@@ -1488,6 +1488,15 @@ static void MENU_Key_EXIT(bool bKeyPressed, bool bKeyHeld)
 	gPttWasReleased = true;
 }
 
+void padEdit(char c)
+{
+	edit_index = strlen(edit);
+	while (edit_index < 10)
+		edit[edit_index++] = c;
+	edit[edit_index] = 0;
+	edit_index = 0;  // 'edit_index' is going to be used as the cursor position
+}
+
 static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 {	
 	//Exit if not allowed to edit
@@ -1534,11 +1543,7 @@ static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 			if (edit_index < 0)
 			{	// enter encryption key edit mode
 				// pad the encryption key out with '_'
-				edit_index = strlen(edit);
-				while (edit_index < 10)
-					edit[edit_index++] = '_';
-				edit[edit_index] = 0;
-				edit_index = 0;  // 'edit_index' is going to be used as the cursor position
+				padEdit('_');
 
 				return;
 			}
@@ -1557,13 +1562,10 @@ static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 		if (UI_MENU_GetCurrentMenuId() == MENU_MSG_ID)
 		{
 			if (edit_index < 0)
-			{	// enter encryption key edit mode
-				// pad the encryption key out with '_'
-				edit_index = strlen(edit);
-				while (edit_index < 10)
-					edit[edit_index++] = '_';
-				edit[edit_index] = 0;
-				edit_index = 0;  // 'edit_index' is going to be used as the cursor position
+			{
+				strcpy(edit, gEeprom.MSG_ID);
+				// pad the channel name out with '_'
+				padEdit('_');
 
 				return;
 			}
@@ -1588,11 +1590,7 @@ static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 			SETTINGS_FetchChannelName(edit, gSubMenuSelection);
 			
 			// pad the channel name out with '_'
-			edit_index = strlen(edit);
-			while (edit_index < 10)
-				edit[edit_index++] = '_';
-			edit[edit_index] = 0;
-			edit_index = 0;  // 'edit_index' is going to be used as the cursor position
+			padEdit('_');
 
 			// make a copy so we can test for change when exiting the menu item
 			memmove(edit_original, edit, sizeof(edit_original));
