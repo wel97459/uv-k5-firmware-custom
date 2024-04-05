@@ -16,6 +16,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
+
 //#define ENABLE_MESSENGER
 #ifdef ENABLE_MESSENGER
 
@@ -557,6 +558,8 @@ void MSG_ClearPacketBuffer()
 }
 
 void MSG_Send(const char *cMessage){
+	if(cIndex == 0) return;
+
 	MSG_ClearPacketBuffer();
 	#ifdef ENABLE_ENCRYPTION
 		if(gEeprom.MESSENGER_CONFIG.data.encrypt)
