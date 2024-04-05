@@ -34,9 +34,8 @@ enum {
 };
 
 typedef enum KeyboardType {
-	UPPERCASE,
+	  UPPERCASE,
   	LOWERCASE,
-  	NUMERIC,
   	END_TYPE_KBRD
 } KeyboardType;
 

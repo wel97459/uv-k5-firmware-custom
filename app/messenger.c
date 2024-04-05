@@ -18,6 +18,7 @@
  */
 
 //#define ENABLE_MESSENGER
+
 #ifdef ENABLE_MESSENGER
 
 #include <string.h>
@@ -51,12 +52,8 @@ const uint8_t MAX_MSG_LENGTH = PAYLOAD_LENGTH - 1;
 
 uint16_t TONE2_FREQ;
 
-char T9TableLow[9][4] = { {',', '.', '?', '!'}, {'a', 'b', 'c', '\0'}, {'d', 'e', 'f', '\0'}, {'g', 'h', 'i', '\0'}, {'j', 'k', 'l', '\0'}, {'m', 'n', 'o', '\0'}, {'p', 'q', 'r', 's'}, {'t', 'u', 'v', '\0'}, {'w', 'x', 'y', 'z'} };
-//char T9TableUp[9][4] = { {',', '.', '?', '!'}, {'A', 'B', 'C', '\0'}, {'D', 'E', 'F', '\0'}, {'G', 'H', 'I', '\0'}, {'J', 'K', 'L', '\0'}, {'M', 'N', 'O', '\0'}, {'P', 'Q', 'R', 'S'}, {'T', 'U', 'V', '\0'}, {'W', 'X', 'Y', 'Z'} };
-unsigned char numberOfLettersAssignedToKey[9] = { 4, 3, 3, 3, 3, 3, 4, 3, 4 };
-
-char T9TableNum[9][1] = { {'1'}, {'2'}, {'3'}, {'4'}, {'5'}, {'6'}, {'7'}, {'8'}, {'9'} };
-unsigned char numberOfNumsAssignedToKey[9] = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+char T9TableLow[9][5] = { {',', '.', '?', '!', '1'}, {'a', 'b', 'c', '2', '\0'}, {'d', 'e', 'f', '3', '\0'}, {'g', 'h', 'i', '4', '\0'}, {'j', 'k', 'l', '5', '\0'}, {'m', 'n', 'o', '6', '\0'}, {'p', 'q', 'r', 's', '7'}, {'t', 'u', 'v', '8', '\0'}, {'w', 'x', 'y', 'z', '9'} };
+unsigned char numberOfLettersAssignedToKey[9] = { 5, 4, 4, 4, 4, 4, 5, 4, 5 };
 
 char cMessage[PAYLOAD_LENGTH];
 char lastcMessage[PAYLOAD_LENGTH];
@@ -425,20 +422,15 @@ void getNextChar(uint8_t key, uint8_t dec){
 	if (cIndex >= MAX_MSG_LENGTH || (cIndex > 0 && dec))
 		cIndex--;
 
-	if ( keyboardType == NUMERIC ) {
-		chTmp = T9TableNum[key - 1][prevLetter];
-		keyMod = numberOfNumsAssignedToKey[key - 1];
-		cMessage[cIndex] = chTmp;
-	} else if ( keyboardType == LOWERCASE || keyboardType == UPPERCASE) {
-		chTmp = T9TableLow[key - 1][prevLetter];
-		keyMod = numberOfLettersAssignedToKey[key - 1];
-		if(keyboardType == UPPERCASE && chTmp >= 'a' && chTmp <= 'z'){
-			chTmp = chTmp - 32;
-		}
-		prevLetter = (prevLetter+1) % keyMod;
-		cMessage[cIndex] = chTmp;
-		keyTickCounter = 0;
+	chTmp = T9TableLow[key - 1][prevLetter];
+	keyMod = numberOfLettersAssignedToKey[key - 1];
+	if(keyboardType == UPPERCASE && chTmp >= 'a' && chTmp <= 'z'){
+		chTmp = chTmp - 32;
 	}
+	prevLetter = (prevLetter+1) % keyMod;
+	cMessage[cIndex] = chTmp;
+	keyTickCounter = 0;
+	
 
 	if ( cIndex < MAX_MSG_LENGTH ) 
 		cIndex++;
@@ -447,36 +439,24 @@ void getNextChar(uint8_t key, uint8_t dec){
 }
 
 void insertCharInMessage(uint8_t key) {
-	if ( key == KEY_0 ) {
-
-		if ( keyboardType == NUMERIC ) {
-			cMessage[cIndex] = '0';
-		} else {
-			cMessage[cIndex] = ' ';
-		}
+	if (key == KEY_0)
+	{
+		cMessage[cIndex] = ' ';
 		
 		if ( cIndex < MAX_MSG_LENGTH ) 
 			cIndex++;
 		
 		keyTickCounter = NEXT_CHAR_DELAY+2;
-	} else if (prevKey == key)
-	{
+	} else if (prevKey == key) {
 		getNextChar(key, true);
-	}
-	else
-	{
+	} else {
 		getNextChar(key, false);
 		prevLetter = 1;
 	}
 
 	cMessage[cIndex] = '\0';
 	
-	if ( keyboardType == NUMERIC ) {
-		prevKey = 0;
-		prevLetter = 0;
-	} else {
-		prevKey = key;
-	}
+	prevKey = key;
 }
 
 void processBackspace() {
@@ -509,7 +489,6 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
     				prevLetter = 0;
 				}
 				insertCharInMessage(Key);
-
 				break;
 			case KEY_STAR:
 				keyboardType = (KeyboardType)((keyboardType + 1) % END_TYPE_KBRD);
@@ -518,12 +497,15 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
 				processBackspace();
 				break;
 			case KEY_UP:
-				memset(cMessage, 0, sizeof(cMessage));
 				memcpy(cMessage, lastcMessage, PAYLOAD_LENGTH);
 				cIndex = strlen(cMessage);
 				break;
-			/*case KEY_DOWN:
-				break;*/
+		#ifdef ENABLE_MESSENGER_ID
+			case KEY_DOWN:
+				sprintf(cMessage, "%s ", gEeprom.MSG_ID);
+				cIndex = strlen(cMessage);
+				break;
+		#endif
 			case KEY_MENU:
 				// Send message
 				MSG_Send(cMessage);
@@ -573,8 +555,7 @@ void MSG_Send(const char *cMessage){
 	#else
 		dataPacket.data.header=MESSAGE_PACKET;
 	#endif
-	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));
-	MSG_SendPacket();
+	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));	MSG_SendPacket();
 }
 
 void MSG_ConfigureFSK(bool rx)

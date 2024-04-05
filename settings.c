@@ -192,6 +192,11 @@ void SETTINGS_SaveSettings(void)
 	#ifdef ENABLE_ENCRYPTION
 		SETTINGS_SaveEncryptionKey();
 	#endif
+
+	#ifdef ENABLE_MESSENGER_ID
+		EEPROM_WriteBuffer(0x0F40, gEeprom.MSG_ID, true);
+		EEPROM_WriteBuffer(0x0F48, gEeprom.MSG_ID + 8, true);
+	#endif
 }
 
 void SETTINGS_SaveChannel(uint8_t Channel, uint8_t VFO, const VFO_Info_t *pVFO, uint8_t Mode)

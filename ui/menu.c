@@ -126,6 +126,9 @@ const t_menu_item MenuList[] =
 	{"MsgAck", VOICE_ID_INVALID,                       MENU_MSG_ACK       }, // messenger respond ACK
 	{"MsgMod", VOICE_ID_INVALID,                       MENU_MSG_MODULATION}, // messenger modulation
 #endif
+#ifdef ENABLE_MESSENGER_ID
+	{"MsgID", VOICE_ID_INVALID,                        MENU_MSG_ID}, // messenger modulation
+#endif
 	{"Sql",    VOICE_ID_SQUELCH,                       MENU_SQL           },
 	// hidden menu items from here on
 	// enabled if pressing both the PTT and upper side button at power-on
@@ -781,6 +784,38 @@ void UI_DisplayMenu(void)
 				}
 			#endif
 
+			#ifdef ENABLE_MESSENGER_ID
+				case MENU_MSG_ID:
+				{
+					if (!gIsInSubMenu)
+					{	// show placeholder in main menu
+						sprintf(String, "%s", gEeprom.MSG_ID);
+						UI_PrintString(String, menu_item_x1, menu_item_x2, 2, 8);
+					}
+					else
+					{	// show the key being edited
+						if (edit_index != -1 || gAskForConfirmation) {
+							UI_PrintString(edit, (menu_item_x1 -2), 0, 2, 8);
+							// show the cursor
+							if(edit_index < 10)
+								UI_PrintString("^", (menu_item_x1 -2) + (8 * edit_index), 0, 4, 8);  
+						}
+						else{
+							strcpy(String, "Call Sign");
+							UI_PrintStringSmall(String, 20, 0, 5);
+
+							memset(String, 0, sizeof(String));
+
+							sprintf(String, "%s", gEeprom.MSG_ID);
+							UI_PrintString(String, (menu_item_x1 -2), 0, 2, 8);
+						}			
+					}
+
+					already_printed = true;
+					break;
+				}
+			#endif
+
 			#ifdef ENABLE_MESSENGER
 				case MENU_MSG_MODULATION:
 					strcpy(String, gSubMenu_MSG_MODULATION[gSubMenuSelection]);
@@ -1017,6 +1052,9 @@ void UI_DisplayMenu(void)
 	     UI_MENU_GetCurrentMenuId() == MENU_MEM_CH   ||
 		 #ifdef ENABLE_ENCRYPTION
 			UI_MENU_GetCurrentMenuId() == MENU_ENC_KEY  ||
+		 #endif
+		 #ifdef ENABLE_MESSENGER_ID
+		 	UI_MENU_GetCurrentMenuId() == MENU_MSG_ID  ||
 		 #endif
 	     UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME ||
 	     UI_MENU_GetCurrentMenuId() == MENU_DEL_CH) && gAskForConfirmation)

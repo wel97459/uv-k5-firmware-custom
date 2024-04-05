@@ -73,9 +73,7 @@ void UI_DisplayMSG(void) {
 	
 	UI_DrawDottedLineBuffer(gFrameBuffer, 14, 40, 126, 40, true, 4);
 	memset(String, 0, sizeof(String));
-	if ( keyboardType == NUMERIC ) {
-		strcpy(String, "2");
-	} else if ( keyboardType == UPPERCASE ) {		
+	if ( keyboardType == UPPERCASE ) {		
 		strcpy(String, "B");
 	} else {		
 		strcpy(String, "b");
