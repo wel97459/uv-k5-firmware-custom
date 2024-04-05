@@ -16,7 +16,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
-//#define ENABLE_MESSENGER
+ #define ENABLE_MESSENGER
 
 #ifdef ENABLE_MESSENGER
 
@@ -58,7 +58,6 @@ char cMessage[PAYLOAD_LENGTH];
 char lastcMessage[PAYLOAD_LENGTH];
 char rxMessage[4][PAYLOAD_LENGTH + 2];
 unsigned char cIndex = 0;
-unsigned char shiftKey = 0;
 unsigned char prevKey = 0, prevLetter = 0;
 KeyboardType keyboardType = UPPERCASE;
 
@@ -439,36 +438,24 @@ void getNextChar(uint8_t key, uint8_t dec){
 }
 
 void insertCharInMessage(uint8_t key) {
-	if ( key == KEY_0 ) {
-
-		if ( keyboardType == NUMERIC ) {
-			cMessage[cIndex] = '0';
-		} else {
-			cMessage[cIndex] = ' ';
-		}
+	if (key == KEY_0)
+	{
+		cMessage[cIndex] = ' ';
 		
 		if ( cIndex < MAX_MSG_LENGTH ) 
 			cIndex++;
 		
 		keyTickCounter = NEXT_CHAR_DELAY+2;
-	} else if (prevKey == key)
-	{
+	} else if (prevKey == key) {
 		getNextChar(key, true);
-	}
-	else
-	{
+	} else {
 		getNextChar(key, false);
 		prevLetter = 1;
 	}
 
 	cMessage[cIndex] = '\0';
 	
-	if ( keyboardType == NUMERIC ) {
-		prevKey = 0;
-		prevLetter = 0;
-	} else {
-		prevKey = key;
-	}
+	prevKey = key;
 }
 
 void processBackspace() {
@@ -501,7 +488,6 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
     				prevLetter = 0;
 				}
 				insertCharInMessage(Key);
-
 				break;
 			case KEY_STAR:
 				keyboardType = (KeyboardType)((keyboardType + 1) % END_TYPE_KBRD);
@@ -515,7 +501,7 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
 				break;
 			case KEY_DOWN:
 				strcpy(cMessage, "KJ6ICA ");
-				cIndex = strlen(7);
+				cIndex = 7;
 				break;
 			case KEY_MENU:
 				// Send message
@@ -566,8 +552,7 @@ void MSG_Send(const char *cMessage){
 	#else
 		dataPacket.data.header=MESSAGE_PACKET;
 	#endif
-	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));
-	MSG_SendPacket();
+	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));	MSG_SendPacket();
 }
 
 void MSG_ConfigureFSK(bool rx)

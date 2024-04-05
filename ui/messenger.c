@@ -38,8 +38,8 @@ void UI_DisplayMSG(void) {
 	
 	static char String[37];
 
-	// memset(gFrameBuffer, 0, sizeof(gFrameBuffer));
-	// memset(String, 0, sizeof(String));
+	memset(gFrameBuffer, 0, sizeof(gFrameBuffer));
+	memset(String, 0, sizeof(String));
 
 	//UI_PrintStringSmallBold("MESSENGER", 0, 127, 0);
 	UI_PrintStringSmall("Messenger", 1, 127, 0);
@@ -59,7 +59,7 @@ void UI_DisplayMSG(void) {
 
 	//GUI_DisplaySmallest("RX", 4, 34, false, true);
 
-	//memset(String, 0, sizeof(String));
+	memset(String, 0, sizeof(String));
 	
 	uint8_t mPos = 8;
 	const uint8_t mLine = 7;
@@ -72,10 +72,8 @@ void UI_DisplayMSG(void) {
 	// TX Screen
 	
 	UI_DrawDottedLineBuffer(gFrameBuffer, 14, 40, 126, 40, true, 4);
-	//memset(String, 0, sizeof(String));
-	if ( keyboardType == NUMERIC ) {
-		strcpy(String, "2");
-	} else if ( keyboardType == UPPERCASE ) {		
+	memset(String, 0, sizeof(String));
+	if ( keyboardType == UPPERCASE ) {		
 		strcpy(String, "B");
 	} else {		
 		strcpy(String, "b");
@@ -84,7 +82,7 @@ void UI_DisplayMSG(void) {
 	UI_DrawRectangleBuffer(gFrameBuffer, 2, 36, 10, 44, true);
 	GUI_DisplaySmallest(String, 5, 38, false, true);
 
-	//memset(String, 0, sizeof(String));
+	memset(String, 0, sizeof(String));
 	if(keyTickCounter > NEXT_CHAR_DELAY)
 	{
 		sprintf(String, "%s_", cMessage);
