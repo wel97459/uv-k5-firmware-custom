@@ -375,6 +375,17 @@ int MENU_GetLimits(uint8_t menu_id, int32_t *pMin, int32_t *pMax)
 	return 0;
 }
 
+void TrimEdit(char c)
+{
+	for (int i = 9; i >= 0; i--)
+	{
+		if (edit[i] != ' ' && edit[i] != '_' && edit[i] != 0x00 && edit[i] != 0xff)
+			break;
+		edit[i] = c;
+	}
+	return;
+}
+
 void MENU_AcceptSetting(void)
 {
 	int32_t        Min;
@@ -522,8 +533,17 @@ void MENU_AcceptSetting(void)
 			case MENU_MSG_MODULATION:
 				gEeprom.MESSENGER_CONFIG.data.modulation = gSubMenuSelection;
 				break;
-		#endif
 
+		#endif
+		#ifdef ENABLE_MESSENGER_ID		
+			case MENU_MSG_ID:
+					TrimEdit(0);
+					memset(gEeprom.MSG_ID, 0, sizeof(gEeprom.MSG_ID));
+					memmove(gEeprom.MSG_ID, edit, sizeof(gEeprom.MSG_ID));
+					memset(edit, 0, sizeof(edit));
+					gUpdateStatus        = true;
+				break;
+		#endif
 		case MENU_W_N:
 			gTxVfo->CHANNEL_BANDWIDTH = gSubMenuSelection;
 			gRequestSaveChannel       = 1;
@@ -558,14 +578,7 @@ void MENU_AcceptSetting(void)
 			return;
 
 		case MENU_MEM_NAME:
-			{	// trailing trim
-				for (int i = 9; i >= 0; i--)
-				{
-					if (edit[i] != ' ' && edit[i] != '_' && edit[i] != 0x00 && edit[i] != 0xff)
-						break;
-					edit[i] = ' ';
-				}
-			}
+			TrimEdit(' ');
 			
 			SETTINGS_SaveChannelName(gSubMenuSelection, edit);
 			return;
@@ -1239,6 +1252,9 @@ static void MENU_Key_0_to_9(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld)
 		#ifdef ENABLE_ENCRYPTION
 			|| UI_MENU_GetCurrentMenuId() == MENU_ENC_KEY
 		#endif
+		#ifdef ENABLE_MESSENGER_ID
+			|| UI_MENU_GetCurrentMenuId() == MENU_MSG_ID
+		#endif
 	))
 		
 	{	// currently editing the channel name
@@ -1537,6 +1553,31 @@ static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 		}
 	#endif
 
+	#ifdef ENABLE_MESSENGER_ID
+		if (UI_MENU_GetCurrentMenuId() == MENU_MSG_ID)
+		{
+			if (edit_index < 0)
+			{	// enter encryption key edit mode
+				// pad the encryption key out with '_'
+				edit_index = strlen(edit);
+				while (edit_index < 10)
+					edit[edit_index++] = '_';
+				edit[edit_index] = 0;
+				edit_index = 0;  // 'edit_index' is going to be used as the cursor position
+
+				return;
+			}
+			else if (edit_index >= 0 && edit_index < 10)
+			{	// editing the encryption key characters
+
+				if (++edit_index < 10)
+					return;	// next char
+
+				// exit, save encryption key
+			}
+		}
+	#endif
+
 	if (UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME)
 	{
 		if (edit_index < 0)
@@ -1589,6 +1630,9 @@ static void MENU_Key_MENU(const bool bKeyPressed, const bool bKeyHeld)
 			UI_MENU_GetCurrentMenuId() == MENU_DEL_CH ||
 			#ifdef ENABLE_ENCRYPTION
 				UI_MENU_GetCurrentMenuId() == MENU_ENC_KEY ||
+			#endif
+			#ifdef ENABLE_MESSENGER_ID
+				UI_MENU_GetCurrentMenuId() == MENU_MSG_ID ||
 			#endif
 			UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME)
 		{
@@ -1650,7 +1694,11 @@ static void MENU_Key_STAR(const bool bKeyPressed, const bool bKeyHeld)
 
 	gBeepToPlay = BEEP_1KHZ_60MS_OPTIONAL;
 
-	if (UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME && edit_index >= 0)
+	if ((UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME 
+		#ifdef ENABLE_MESSENGER_ID
+			|| UI_MENU_GetCurrentMenuId() == MENU_MSG_ID
+		#endif
+		)&& edit_index >= 0)
 	{	// currently editing the channel name
 
 		if (edit_index < 10)
@@ -1703,6 +1751,9 @@ static void MENU_Key_UP_DOWN(bool bKeyPressed, bool bKeyHeld, int8_t Direction)
 			UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME
 			#ifdef ENABLE_ENCRYPTION
 				|| UI_MENU_GetCurrentMenuId() == MENU_ENC_KEY
+			#endif
+			#ifdef ENABLE_MESSENGER_ID
+				|| UI_MENU_GetCurrentMenuId() == MENU_MSG_ID
 			#endif
 		)
 	)
@@ -1845,6 +1896,9 @@ void MENU_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld)
 					UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME
 					#ifdef ENABLE_ENCRYPTION
 						|| UI_MENU_GetCurrentMenuId() == MENU_ENC_KEY
+					#endif
+					#ifdef ENABLE_MESSENGER_ID
+						|| UI_MENU_GetCurrentMenuId() == MENU_MSG_ID 
 					#endif
 				)
 			)

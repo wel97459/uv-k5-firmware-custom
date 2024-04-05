@@ -736,6 +736,10 @@ void BOARD_EEPROM_Init(void)
 		// 0F30..0F3F - load encryption key
 		EEPROM_ReadBuffer(0x0F30, gEeprom.ENC_KEY, sizeof(gEeprom.ENC_KEY));
 	#endif
+	#ifdef ENABLE_MESSENGER_ID
+		// 0F40..0F4F - load encryption key
+		EEPROM_ReadBuffer(0x0F40, gEeprom.MSG_ID, sizeof(gEeprom.MSG_ID));
+	#endif
 
 	#ifdef ENABLE_SPECTRUM_SHOW_CHANNEL_NAME
 		BOARD_gMR_LoadChannels();

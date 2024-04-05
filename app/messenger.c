@@ -16,7 +16,7 @@
  *     See the License for the specific language governing permissions and
  *     limitations under the License.
  */
- #define ENABLE_MESSENGER
+//#define ENABLE_MESSENGER
 
 #ifdef ENABLE_MESSENGER
 
@@ -499,10 +499,12 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
 				memcpy(cMessage, lastcMessage, PAYLOAD_LENGTH);
 				cIndex = strlen(cMessage);
 				break;
+		#ifdef ENABLE_MESSENGER_ID
 			case KEY_DOWN:
-				strcpy(cMessage, "KJ6ICA ");
-				cIndex = 7;
+				sprintf(cMessage, "%s ", gEeprom.MSG_ID);
+				cIndex = strlen(cMessage);
 				break;
+		#endif
 			case KEY_MENU:
 				// Send message
 				MSG_Send(cMessage);

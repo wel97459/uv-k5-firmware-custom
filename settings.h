@@ -254,6 +254,9 @@ typedef struct {
 #ifdef ENABLE_MESSENGER
 	MessengerConfig       MESSENGER_CONFIG;
 #endif
+#ifdef ENABLE_MESSENGER_ID
+	char                  MSG_ID[16];
+#endif
 	uint16_t              VOX1_THRESHOLD;
 	uint16_t              VOX0_THRESHOLD;
 
