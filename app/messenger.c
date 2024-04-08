@@ -18,7 +18,6 @@
  */
 
 //#define ENABLE_MESSENGER
-
 #ifdef ENABLE_MESSENGER
 
 #include <string.h>
@@ -502,7 +501,7 @@ void  MSG_ProcessKeys(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld) {
 				break;
 		#ifdef ENABLE_MESSENGER_ID
 			case KEY_DOWN:
-				sprintf(cMessage, "%s ", gEeprom.MSG_ID);
+				sprintf(cMessage, "%s%s", cMessage, gEeprom.MSG_ID);
 				cIndex = strlen(cMessage);
 				break;
 		#endif
@@ -555,7 +554,8 @@ void MSG_Send(const char *cMessage){
 	#else
 		dataPacket.data.header=MESSAGE_PACKET;
 	#endif
-	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));	MSG_SendPacket();
+	memcpy(dataPacket.data.payload, cMessage, sizeof(dataPacket.data.payload));	
+	MSG_SendPacket();
 }
 
 void MSG_ConfigureFSK(bool rx)
