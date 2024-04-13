@@ -194,8 +194,8 @@ void SETTINGS_SaveSettings(void)
 	#endif
 
 	#ifdef ENABLE_MESSENGER_ID
-		EEPROM_WriteBuffer(0x0F40, gEeprom.MSG_ID, true);
-		EEPROM_WriteBuffer(0x0F48, gEeprom.MSG_ID + 8, true);
+		EEPROM_WriteBuffer(0x0F20, gEeprom.MSG_ID, true);
+		EEPROM_WriteBuffer(0x0F28, gEeprom.MSG_ID + 8, true);
 	#endif
 }
 
