@@ -248,6 +248,7 @@ int MENU_GetLimits(uint8_t menu_id, int32_t *pMin, int32_t *pMax)
 		case MENU_500TX:
 		case MENU_350EN:
 		case MENU_SCREN:
+		case MENU_MURSTX:
 #ifdef ENABLE_ENCRYPTION
 		case MENU_MSG_ENC:
 #endif
@@ -812,6 +813,10 @@ void MENU_AcceptSetting(void)
 			gSetting_500TX = gSubMenuSelection;
 			break;
 
+		case MENU_MURSTX:
+			gSetting_MURSTX = gSubMenuSelection;
+			break;
+
 		case MENU_350EN:
 			gSetting_350EN       = gSubMenuSelection;
 			gVfoConfigureMode    = VFO_CONFIGURE_RELOAD;
@@ -1186,6 +1191,10 @@ void MENU_ShowCurrentSetting(void)
 
 		case MENU_350EN:
 			gSubMenuSelection = gSetting_350EN;
+			break;
+
+		case MENU_MURSTX:
+			gSubMenuSelection = gSetting_MURSTX;
 			break;
 
 		case MENU_SCREN:

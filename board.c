@@ -711,6 +711,7 @@ void BOARD_EEPROM_Init(void)
 	gSetting_live_DTMF_decoder = (Data[7] & (1u << 1)) ? true : false;
 	gSetting_battery_text      = (((Data[7] >> 2) & 3u) <= 2) ? (Data[7] >> 2) & 3 : 2;
 	gSetting_backlight_on_tx_rx = (Data[7] >> 6) & 3u;
+	gSetting_MURSTX             = (Data[8] < 2) ? Data[8] : false;
 	// Read RxOffset setting
 	EEPROM_ReadBuffer(RX_OFFSET_ADDR, Data, 4);
     memmove(&gEeprom.RX_OFFSET, Data, 4);

@@ -124,6 +124,7 @@ enum
 	MENU_500TX,
 	MENU_350EN,
 	MENU_SCREN,
+	MENU_MURSTX,
 #ifdef ENABLE_F_CAL_MENU
 	MENU_F_CALI,  // reference xtal calibration
 #endif

@@ -89,6 +89,7 @@ bool              gSetting_KILLED;
 bool              gSetting_200TX;
 bool              gSetting_500TX;
 bool              gSetting_350EN;
+bool  			  gSetting_MURSTX;
 uint8_t           gSetting_F_LOCK;
 bool              gSetting_ScrambleEnable;
 

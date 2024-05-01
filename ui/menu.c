@@ -137,6 +137,7 @@ const t_menu_item MenuList[] =
 	{"Tx 350", VOICE_ID_INVALID,                       MENU_350TX         }, // was "350TX"
 	{"Tx 500", VOICE_ID_INVALID,                       MENU_500TX         }, // was "500TX"
 	{"350 En", VOICE_ID_INVALID,                       MENU_350EN         }, // was "350EN"
+	{"TxMURS", VOICE_ID_INVALID,                       MENU_MURSTX          }, // was "350EN"
 	{"ScraEn", VOICE_ID_INVALID,                       MENU_SCREN         }, // was "SCREN"
 #ifdef ENABLE_F_CAL_MENU
 	{"FrCali", VOICE_ID_INVALID,                       MENU_F_CALI        }, // reference xtal calibration
@@ -693,6 +694,7 @@ void UI_DisplayMenu(void)
 			case MENU_200TX:
 			case MENU_500TX:
 			case MENU_350EN:
+			case MENU_MURSTX:
 			case MENU_SCREN:
 				strcpy(String, gSubMenu_OFF_ON[gSubMenuSelection]);
 				break;

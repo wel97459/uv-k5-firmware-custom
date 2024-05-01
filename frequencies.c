@@ -178,6 +178,8 @@ int TX_freq_check(const uint32_t Frequency)
 				return 0;
 			if (Frequency >= 42000000 && Frequency < 45000000)
 				return 0;
+			if(gSetting_MURSTX && (Frequency == 15182000 || Frequency == 15188000 || Frequency == 15194000 || Frequency == 15457000 || Frequency == 15460000))
+				return 0;
 			break;
 
 		case F_LOCK_CE:

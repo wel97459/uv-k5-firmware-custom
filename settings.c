@@ -179,7 +179,7 @@ void SETTINGS_SaveSettings(void)
 	if (!gSetting_live_DTMF_decoder) State[7] &= ~(1u << 1);
 	State[7] = (State[7] & ~(3u << 2)) | ((gSetting_battery_text & 3u) << 2);
 	State[7] = (State[7] & ~(3u << 6)) | ((gSetting_backlight_on_tx_rx & 3u) << 6);
-
+	State[8]  = gSetting_MURSTX;
 	EEPROM_WriteBuffer(0x0F40, State, true);
 
 	#ifdef ENABLE_FMRADIO
