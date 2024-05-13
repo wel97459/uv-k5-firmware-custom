@@ -304,7 +304,8 @@ extern bool                  g_CxCSS_TAIL_Found;
 #endif
 
 #ifdef ENABLE_DIGI_VOX
-	extern uint8_t vox_debug;
+	extern uint8_t g_vox_sustan;
+	extern uint8_t g_vox_state;
 #endif
 
 // true means we are receiving signal

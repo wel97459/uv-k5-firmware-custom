@@ -75,7 +75,8 @@ const uint16_t    power_save2_10ms                 =   200 / 10;   // 200ms
 #endif
 
 #ifdef ENABLE_DIGI_VOX
-	uint8_t vox_debug = 0;
+	uint8_t g_vox_sustan = 0;
+	uint8_t g_vox_state  = 0;
 #endif
 
 const uint16_t    NOAA_countdown_10ms              =  5000 / 10;   // 5 seconds
