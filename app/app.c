@@ -77,6 +77,10 @@
 	uint8_t gPlayMSGRingCount = 0;
 #endif
 
+#ifdef ENABLE_UART
+    #include "driver/uart.h"
+#endif
+
 static void ProcessKey(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld);
 static void FlashlightTimeSlice();
 
@@ -1329,6 +1333,14 @@ void APP_TimeSlice500ms(void)
 		}
 	#endif
 
+	#ifdef ENABLE_DIGI_VOX
+		// if(vox_debug == 0){
+		// 	//vox_debug = 4;
+			UART_printf("AMP:%u\r\n", BK4819_GetVoiceAmplitudeOut());
+		// } else {
+		// 	vox_debug--;
+		// }
+	#endif
 	// Skipped authentic device check
 
 	if (gKeypadLocked > 0)

@@ -385,17 +385,18 @@ bool UART_IsCommandAvailable(void)
       memset(txMessage, 0, sizeof(txMessage));
       snprintf(txMessage, (PAYLOAD_LENGTH + 4), "%s", &UART_DMA_Buffer[gUART_WriteIndex + 4]);
 
-			for (int i = 0; txMessage[i] != '\0'; i++)
-			{
-				if (txMessage[i] == '\r' || txMessage[i] == '\n')
-					txMessage[i] = '\0';
-			}
-      if (strlen(txMessage) > 0)
-      {
-        MSG_Send(txMessage);
-        UART_printf("SMS>%s\r\n", txMessage);
-        gUpdateDisplay = true;
-      }
+		for (int i = 0; txMessage[i] != '\0'; i++)
+		{
+			if (txMessage[i] == '\r' || txMessage[i] == '\n')
+				txMessage[i] = '\0';
+		}
+
+		if (strlen(txMessage) > 0)
+		{
+			MSG_Send(txMessage);
+			UART_printf("SMS>%s\r\n", txMessage);
+			gUpdateDisplay = true;
+		}
     }
 
 #endif

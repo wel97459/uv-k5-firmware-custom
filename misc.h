@@ -303,6 +303,10 @@ extern bool                  g_CxCSS_TAIL_Found;
 	extern uint16_t          gVoxPauseCountdown;
 #endif
 
+#ifdef ENABLE_DIGI_VOX
+	extern uint8_t vox_debug;
+#endif
+
 // true means we are receiving signal
 extern bool                  g_SquelchLost;
 extern uint8_t               gFlashLightState;

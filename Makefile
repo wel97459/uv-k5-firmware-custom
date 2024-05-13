@@ -15,10 +15,11 @@ ENABLE_AIRCOPY                := 0
 ENABLE_FMRADIO                := 1
 ENABLE_NOAA                   := 0
 ENABLE_VOICE                  := 0
-ENABLE_VOX                    := 1
+ENABLE_VOX                    := 0
+ENABLE_DIGI_VOX               := 1
 ENABLE_ALARM                  := 0
 ENABLE_TX1750                 := 0
-ENABLE_PWRON_PASSWORD         := 1
+ENABLE_PWRON_PASSWORD         := 0
 ENABLE_DTMF_CALLING           := 0
 
 # ---- CUSTOM MODS ----
@@ -49,8 +50,8 @@ ENABLE_MESSENGER_ID                     := 1
 ENABLE_MESSENGER_DELIVERY_NOTIFICATION  := 1
 ENABLE_MESSENGER_FSK_MUTE               := 1
 ENABLE_MESSENGER_NOTIFICATION           := 1
-ENABLE_MESSENGER_UART                   := 0
-ENABLE_ENCRYPTION                       := 1
+ENABLE_MESSENGER_UART                   := 1
+ENABLE_ENCRYPTION                       := 0
 
 #############################################################
 
@@ -287,6 +288,9 @@ ifeq ($(ENABLE_VOICE),1)
 endif
 ifeq ($(ENABLE_VOX),1)
 	CFLAGS  += -DENABLE_VOX
+endif
+ifeq ($(ENABLE_DIGI_VOX),1)
+	CFLAGS  += -DENABLE_DIGI_VOX
 endif
 ifeq ($(ENABLE_ALARM),1)
 	CFLAGS  += -DENABLE_ALARM
