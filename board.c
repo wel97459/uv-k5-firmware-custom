@@ -788,10 +788,15 @@ void BOARD_EEPROM_LoadCalibration(void)
 	}
 	gBatteryCalibration[5] = 2300;
 
-	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
+	#ifdef ENABLE_VOX
 		// fixed and improved VOX sensitivity, based on calibration data
 		gEeprom.VOX1_THRESHOLD = 205-(20*gEeprom.VOX_LEVEL);
 		gEeprom.VOX0_THRESHOLD = 215-(20*gEeprom.VOX_LEVEL);
+	#endif
+
+	#ifdef ENABLE_DIGI_VOX
+		gEeprom.VOX1_THRESHOLD = (50*gEeprom.VOX_LEVEL);
+		gEeprom.VOX0_THRESHOLD = (50*gEeprom.VOX_LEVEL);
 	#endif
 
 	//EEPROM_ReadBuffer(0x1F80 + gEeprom.MIC_SENSITIVITY, &Mic, 1);

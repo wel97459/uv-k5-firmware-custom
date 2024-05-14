@@ -1149,14 +1149,14 @@ void APP_TimeSlice10ms(void)
 	#ifdef ENABLE_DIGI_VOX
 		if (gEeprom.VOX_SWITCH){
 			const unsigned int voice_amp  = BK4819_GetVoiceAmplitudeOut();
-			if(g_vox_sustan < 15 && voice_amp > 100)
+			if(g_vox_sustan < gEeprom.VOX_DELAY && voice_amp > gEeprom.VOX0_THRESHOLD)
 			{
 				g_vox_sustan ++;
-			}else if (g_vox_sustan > 0 && voice_amp < 100)
+			}else if (g_vox_sustan > 0 && voice_amp < gEeprom.VOX0_THRESHOLD)
 			{
 				g_vox_sustan --;
 			}
-			if(g_vox_sustan == 15 && g_vox_state == 0){
+			if(g_vox_sustan == gEeprom.VOX_DELAY && g_vox_state == 0){
 				g_vox_state = 1;
 				FUNCTION_Select(FUNCTION_TRANSMIT);
 				
