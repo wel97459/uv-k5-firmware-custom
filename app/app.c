@@ -1147,22 +1147,24 @@ void APP_TimeSlice10ms(void)
 	#endif
 
 	#ifdef ENABLE_DIGI_VOX
-		const unsigned int voice_amp  = BK4819_GetVoiceAmplitudeOut();
-		if(g_vox_sustan < 15 && voice_amp > 100)
-		{
-			g_vox_sustan ++;
-		}else if (g_vox_sustan > 0 && voice_amp < 100)
-		{
-			g_vox_sustan --;
-		}
-		if(g_vox_sustan == 15 && g_vox_state == 0){
-			g_vox_state = 1;
-			UART_printf("VOX On\n\r");
-			
-		}
-		if(g_vox_sustan == 0 && g_vox_state == 1){
-			g_vox_state = 0;
-			UART_printf("VOX Off\n\r");
+		if (gEeprom.VOX_SWITCH){
+			const unsigned int voice_amp  = BK4819_GetVoiceAmplitudeOut();
+			if(g_vox_sustan < 15 && voice_amp > 100)
+			{
+				g_vox_sustan ++;
+			}else if (g_vox_sustan > 0 && voice_amp < 100)
+			{
+				g_vox_sustan --;
+			}
+			if(g_vox_sustan == 15 && g_vox_state == 0){
+				g_vox_state = 1;
+				FUNCTION_Select(FUNCTION_TRANSMIT);
+				
+			}
+			if(g_vox_sustan == 0 && g_vox_state == 1){
+				g_vox_state = 0;
+				FUNCTION_Select(FUNCTION_FOREGROUND);
+			}
 		}
 	#endif
 

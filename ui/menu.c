@@ -108,7 +108,7 @@ const t_menu_item MenuList[] =
 	{"D List", VOICE_ID_INVALID,                       MENU_D_LIST        },
 #endif
 	{"D Live", VOICE_ID_INVALID,                       MENU_D_LIVE_DEC    }, // live DTMF decoder
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	{"VOXSen", VOICE_ID_VOX,                           MENU_VOX           }, // VOX Sensibility or OFF
 	{"VOXDel", VOICE_ID_VOX,                           MENU_VOX_DELAY     }, // VOX delay
 #endif
@@ -370,7 +370,7 @@ const t_sidefunction SIDEFUNCTIONS[] =
 	{"POWER",			ACTION_OPT_POWER},
 	{"MONITOR",			ACTION_OPT_MONITOR},
 	{"SCAN",			ACTION_OPT_SCAN},
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	{"VOX",				ACTION_OPT_VOX},
 #endif
 #ifdef ENABLE_ALARM	
@@ -631,7 +631,7 @@ void UI_DisplayMenu(void)
 				#endif
 				break;
 
-			#ifdef ENABLE_VOX
+			#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 				case MENU_VOX:
 					if (gSubMenuSelection == 0)
 						strcpy(String, "OFF");

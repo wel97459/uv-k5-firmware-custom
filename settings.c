@@ -70,7 +70,7 @@ void SETTINGS_SaveSettings(void)
 		State[3] = false;
 	#endif
 	State[4] = gEeprom.KEY_LOCK;
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		State[5] = gEeprom.VOX_SWITCH;
 		State[6] = gEeprom.VOX_LEVEL;
 	#else
@@ -110,7 +110,7 @@ void SETTINGS_SaveSettings(void)
 	EEPROM_WriteBuffer(0x0E98, State, true);
 
 	memset(State, 0xFF, sizeof(State));
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		State[0] = gEeprom.VOX_DELAY;
 	#endif
 	State[1] = gEeprom.RX_AGC;

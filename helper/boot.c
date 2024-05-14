@@ -78,7 +78,7 @@ void BOOT_ProcessMode(BOOT_Mode_t Mode)
 		{
 			gEeprom.DUAL_WATCH               = DUAL_WATCH_OFF;
 			gEeprom.BATTERY_SAVE             = 0;
-			#ifdef ENABLE_VOX
+			#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 				gEeprom.VOX_SWITCH           = false;
 			#endif
 			gEeprom.CROSS_BAND_RX_TX         = CROSS_BAND_OFF;

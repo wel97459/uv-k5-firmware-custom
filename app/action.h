@@ -28,7 +28,7 @@ void ACTION_Power(void);
 void ACTION_Monitor(void);
 void ACTION_Scan(bool bRestart);
 void ACTION_RunSpectrum(void);
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	void ACTION_Vox(void);
 #endif
 #ifdef ENABLE_ALARM

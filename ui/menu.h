@@ -53,7 +53,7 @@ enum
 	MENU_MEM_NAME,
 	MENU_MDF,
 	MENU_SAVE,
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	MENU_VOX,
 	MENU_VOX_DELAY,
 #endif

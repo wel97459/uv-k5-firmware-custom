@@ -257,7 +257,7 @@ static void processFKeyFunction(const KEY_Code_t Key, const bool beep)
 			break;
 
 		case KEY_7:
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 			ACTION_Vox();
 #else
 			toggle_chan_scanlist();

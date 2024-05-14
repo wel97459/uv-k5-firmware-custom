@@ -178,7 +178,7 @@ void ACTION_Scan(bool bRestart)
 	}
 }
 
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	void ACTION_Vox(void)
 	{
 		gEeprom.VOX_SWITCH   = !gEeprom.VOX_SWITCH;
@@ -393,7 +393,7 @@ void ACTION_Handle(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld)
 			ACTION_Scan(true);
 			break;
 		case ACTION_OPT_VOX:
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 			ACTION_Vox();
 #endif
 			break;

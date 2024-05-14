@@ -116,6 +116,9 @@ void FUNCTION_Select(FUNCTION_Type_t Function)
 				ST7565_FixInterfGlitch();
 				gVFO_RSSI_bar_level[0] = 0;
 				gVFO_RSSI_bar_level[1] = 0;
+				
+				gUpdateStatus = true;
+				GUI_DisplayScreen();
 			}
 			else
 			if (PreviousFunction != FUNCTION_RECEIVE)

@@ -151,7 +151,7 @@ void UI_DisplayStatus()
 	}
 	x += sizeof(BITMAP_TDR1) + 2;
 	
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		// VOX indicator
 		if (gEeprom.VOX_SWITCH)
 		{

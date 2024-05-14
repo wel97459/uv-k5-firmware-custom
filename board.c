@@ -527,7 +527,7 @@ void BOARD_EEPROM_Init(void)
 		gEeprom.NOAA_AUTO_SCAN   = (Data[3] <  2) ? Data[3] : false;
 	#endif
 	gEeprom.KEY_LOCK             = (Data[4] <  2) ? Data[4] : false;
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		gEeprom.VOX_SWITCH       = (Data[5] <  2) ? Data[5] : false;
 		gEeprom.VOX_LEVEL        = (Data[6] < 10) ? Data[6] : 1;
 	#endif
@@ -589,7 +589,7 @@ void BOARD_EEPROM_Init(void)
 
 	// 0EA0..0EA7
 	EEPROM_ReadBuffer(0x0EA0, Data, 8);
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		gEeprom.VOX_DELAY = (Data[0] < 11) ? Data[0] : 4;
 	#endif
 	gEeprom.RX_AGC = (Data[1] < RX_AGC_LEN) ? Data[1] : RX_AGC_SLOW;
@@ -785,7 +785,7 @@ void BOARD_EEPROM_LoadCalibration(void)
 	}
 	gBatteryCalibration[5] = 2300;
 
-	#ifdef ENABLE_VOX
+	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		// fixed and improved VOX sensitivity, based on calibration data
 		gEeprom.VOX1_THRESHOLD = 205-(20*gEeprom.VOX_LEVEL);
 		gEeprom.VOX0_THRESHOLD = 215-(20*gEeprom.VOX_LEVEL);

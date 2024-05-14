@@ -287,7 +287,7 @@ int MENU_GetLimits(uint8_t menu_id, int32_t *pMin, int32_t *pMax)
 			*pMax = ARRAY_SIZE(gSubMenu_TOT) - 1;
 			break;
 
-		#ifdef ENABLE_VOX
+		#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 			case MENU_VOX:
 			case MENU_VOX_DELAY:
 		#endif
@@ -588,8 +588,8 @@ void MENU_AcceptSetting(void)
 			gEeprom.BATTERY_SAVE = gSubMenuSelection;
 			break;
 
-		#ifdef ENABLE_VOX
-			case MENU_VOX:
+		#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
+		case MENU_VOX:
 				gEeprom.VOX_SWITCH = gSubMenuSelection != 0;
 				if (gEeprom.VOX_SWITCH)
 					gEeprom.VOX_LEVEL = gSubMenuSelection - 1;
@@ -1020,7 +1020,7 @@ void MENU_ShowCurrentSetting(void)
 			gSubMenuSelection = gEeprom.BATTERY_SAVE;
 			break;
 
-		#ifdef ENABLE_VOX
+		#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		case MENU_VOX:
 			gSubMenuSelection = gEeprom.VOX_SWITCH ? gEeprom.VOX_LEVEL + 1 : 0;
 			break;

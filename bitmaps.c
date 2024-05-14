@@ -125,7 +125,7 @@ const uint8_t BITMAP_F_Key[6] =
 	0b01000001
 };
 
-#ifdef ENABLE_VOX
+#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 	const uint8_t BITMAP_VOX[18] =
 	{	// "VOX"
 		0b00000000,
