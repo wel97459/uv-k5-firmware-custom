@@ -529,7 +529,7 @@ void BOARD_EEPROM_Init(void)
 	gEeprom.KEY_LOCK             = (Data[4] <  2) ? Data[4] : false;
 	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
 		gEeprom.VOX_SWITCH       = (Data[5] <  2) ? Data[5] : false;
-		gEeprom.VOX_LEVEL        = (Data[6] < 10) ? Data[6] : 1;
+		gEeprom.VOX_LEVEL        = (Data[6] < 10) ? Data[6] * 50 : 1;
 	#endif
 	gEeprom.MIC_SENSITIVITY      = (Data[7] <  5) ? Data[7] : 4;
 
@@ -589,8 +589,11 @@ void BOARD_EEPROM_Init(void)
 
 	// 0EA0..0EA7
 	EEPROM_ReadBuffer(0x0EA0, Data, 8);
-	#if defined(ENABLE_VOX) || defined(ENABLE_DIGI_VOX)
+	#ifdef ENABLE_VOX
 		gEeprom.VOX_DELAY = (Data[0] < 11) ? Data[0] : 4;
+	#endif
+	#ifdef ENABLE_DIGI_VOX
+		gEeprom.VOX_DELAY = (Data[0] < 50) ? Data[0] : 10;
 	#endif
 	gEeprom.RX_AGC = (Data[1] < RX_AGC_LEN) ? Data[1] : RX_AGC_SLOW;
 	#ifdef ENABLE_PWRON_PASSWORD
